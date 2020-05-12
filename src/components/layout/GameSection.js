@@ -92,3 +92,45 @@ export const GameSection = (props) => {
       )
     }
   }
+  
+  return (
+    <section className="game">
+      <table className="game__board">
+        <tbody>
+          {
+            rows.map((row) => {
+              return (
+                <tr className="game__row" key={row}>
+                  {
+                    rows.map((column) => {
+                      const indexOfArray = row * 9 + column;
+                      const value = gameArray[indexOfArray];
+
+                      if (cellSelected === indexOfArray) {
+                        return _selectedCell(indexOfArray, value, 'highlight');
+                      }
+
+                      if (fastMode) {
+                        if (numberSelected !== '0' && _isCellSameAsSelectedCell(row, column)) {
+                          return _selectedCell(indexOfArray, value, '');
+                        } else {
+                          return _unselectedCell(indexOfArray, value);
+                        }
+                      } else {
+                        if (cellSelected !== -1 && _isCellSameAsSelectedCell(row, column)) {
+                          return _selectedCell(indexOfArray, value, '');
+                        } else {
+                          return _unselectedCell(indexOfArray, value);
+                        }
+                      }
+                    })
+                  }
+                </tr>
+              )
+            })
+          }
+        </tbody>
+      </table>
+    </section>
+  )
+}
