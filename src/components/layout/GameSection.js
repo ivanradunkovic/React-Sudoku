@@ -10,6 +10,7 @@ export const GameSection = (props) => {
         initArray } = useSudokuContext();
 
         
+  // eslint-disable-next-line no-unused-vars
   function _isCellRelatedToSelectedCell(row, column) {
     if (cellSelected === row * 9 + column) {
       return true;
@@ -92,7 +93,7 @@ export const GameSection = (props) => {
       )
     }
   }
-  
+
   return (
     <section className="game">
       <table className="game__board">
