@@ -37,3 +37,58 @@ export const GameSection = (props) => {
               return false;
             });
   }
+
+  function _isCellSameAsSelectedCell(row, column) {
+    if (fastMode) {
+      if (numberSelected === gameArray[row * 9 + column]) {
+        return true;
+      }
+      return false;
+    } else {
+      if (cellSelected === row * 9 + column) {
+        return true;
+      }
+      if (gameArray[cellSelected] === '0') {
+        return false;
+      }
+      if (gameArray[cellSelected] === gameArray[row * 9 + column]) {
+        return true;
+      }
+    }
+  }
+
+  function _selectedCell(indexOfArray, value, highlight) {
+    if (value !== '0') {
+      if (initArray[indexOfArray] === '0') {
+        return (
+          <td className={`game__cell game__cell--userfilled game__cell--${highlight}selected`} key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+        )
+      } else {
+        return (
+          <td className={`game__cell game__cell--filled game__cell--${highlight}selected`} key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+        )
+      }
+    } else {
+      return (
+        <td className={`game__cell game__cell--${highlight}selected`} key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+      )
+    }
+  }
+
+  function _unselectedCell(indexOfArray, value) {
+    if (value !== '0') {
+      if (initArray[indexOfArray] === '0') {
+        return (
+          <td className="game__cell game__cell--userfilled" key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+        )
+      } else {
+        return (
+          <td className="game__cell game__cell--filled" key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+        )
+      }
+    } else {
+      return (
+        <td className="game__cell" key={indexOfArray} onClick={() => props.onClick(indexOfArray)}>{value}</td>
+      )
+    }
+  }
