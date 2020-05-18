@@ -47,3 +47,28 @@
         SQUARE_PEERS_MAP    = sudoku._get_square_peers_map(SQUARES,
                                     SQUARE_UNITS_MAP);
     }
+
+     // Generate
+    // -------------------------------------------------------------------------
+    sudoku.generate = function(difficulty, unique){
+        /* Generate a new Sudoku puzzle of a particular `difficulty`, e.g.,
+            // Generate an "easy" sudoku puzzle
+            sudoku.generate("easy");
+        Difficulties are as follows, and represent the number of given squares:
+                "easy":         65
+                "medium":       55
+                "hard":         45
+                "very-hard":    35
+                "insane":       25
+                "inhuman":      15
+        You may also enter a custom number of squares to be given, e.g.,
+            // Generate a new Sudoku puzzle with 60 given squares
+            sudoku.generate(60)
+        `difficulty` must be a number between 17 and 81 inclusive. If it's
+        outside of that range, `difficulty` will be set to the closest bound,
+        e.g., 0 -> 17, and 100 -> 81.
+        By default, the puzzles are unique, uless you set `unique` to false.
+        (Note: Puzzle uniqueness is not yet implemented, so puzzles are *not*
+        guaranteed to have unique solutions)
+        TODO: Implement puzzle uniqueness
+        */
