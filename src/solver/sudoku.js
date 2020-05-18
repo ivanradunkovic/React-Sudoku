@@ -30,3 +30,20 @@
         "insane":       25,
         "inhuman":      15,
     };
+
+    // Blank character and board representation
+    sudoku.BLANK_CHAR = '.';
+    sudoku.BLANK_BOARD = "...................................................."+
+            ".............................";
+
+    // Init
+    // -------------------------------------------------------------------------
+    function initialize(){
+        /* Initialize the Sudoku library (invoked after library load)
+        */
+        SQUARES             = sudoku._cross(ROWS, COLS);
+        UNITS               = sudoku._get_all_units(ROWS, COLS);
+        SQUARE_UNITS_MAP    = sudoku._get_square_units_map(SQUARES, UNITS);
+        SQUARE_PEERS_MAP    = sudoku._get_square_peers_map(SQUARES,
+                                    SQUARE_UNITS_MAP);
+    }
