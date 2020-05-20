@@ -72,3 +72,37 @@
         guaranteed to have unique solutions)
         TODO: Implement puzzle uniqueness
         */
+
+         // If `difficulty` is a string or undefined, convert it to a number or
+        // default it to "easy" if undefined.
+        if(typeof difficulty === "string" || typeof difficulty === "undefined"){
+            difficulty = DIFFICULTY[difficulty] || DIFFICULTY.easy;
+        }
+
+        // Force difficulty between 17 and 81 inclusive
+        difficulty = sudoku._force_range(difficulty, NR_SQUARES + 1,
+                MIN_GIVENS);
+
+        // Default unique to true
+        unique = unique || true;
+
+        // Get a set of squares and all possible candidates for each square
+        var blank_board = "";
+        for(var i = 0; i < NR_SQUARES; ++i){
+            blank_board += '.';
+        }
+        var candidates = sudoku._get_candidates_map(blank_board);
+
+        // For each item in a shuffled list of squares
+        var shuffled_squares = sudoku._shuffle(SQUARES);
+        for(var si in shuffled_squares){
+            var square = shuffled_squares[si];
+
+            // If an assignment of a random chioce causes a contradictoin, give
+            // up and try again
+            var rand_candidate_idx =
+                    sudoku._rand_range(candidates[square].length);
+            var rand_candidate = candidates[square][rand_candidate_idx];
+            if(!sudoku._assign(candidates, square, rand_candidate)){
+                break;
+            }
