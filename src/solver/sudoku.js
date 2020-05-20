@@ -106,3 +106,49 @@
             if(!sudoku._assign(candidates, square, rand_candidate)){
                 break;
             }
+
+            // Make a list of all single candidates
+            var single_candidates = [];
+            for(si in SQUARES){
+                square = SQUARES[si];
+
+                if(candidates[square].length === 1){
+                    single_candidates.push(candidates[square]);
+                }
+            }
+
+            // If we have at least difficulty, and the unique candidate count is
+            // at least 8, return the puzzle!
+            if(single_candidates.length >= difficulty &&
+                    sudoku._strip_dups(single_candidates).length >= 8){
+                var board = "";
+                var givens_idxs = [];
+                for(i in SQUARES){
+                    square = SQUARES[i];
+                    if(candidates[square].length === 1){
+                        board += candidates[square];
+                        givens_idxs.push(i);
+                    } else {
+                        board += sudoku.BLANK_CHAR;
+                    }
+                }
+
+                // If we have more than `difficulty` givens, remove some random
+                // givens until we're down to exactly `difficulty`
+                var nr_givens = givens_idxs.length;
+                if(nr_givens > difficulty){
+                    givens_idxs = sudoku._shuffle(givens_idxs);
+                    for(i = 0; i < nr_givens - difficulty; ++i){
+                        var target = parseInt(givens_idxs[i]);
+                        board = board.substr(0, target) + sudoku.BLANK_CHAR +
+                            board.substr(target + 1);
+                    }
+                }
+
+                // Double check board is solvable
+                // TODO: Make a standalone board checker. Solve is expensive.
+                if(sudoku.solve(board)){
+                    return board;
+                }
+            }
+        }
