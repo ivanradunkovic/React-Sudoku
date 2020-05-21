@@ -259,4 +259,69 @@
             for(var si in SQUARES){
                 candidate_map[SQUARES[si]] = sudoku.DIGITS;
             }
+
+            // For each non-blank square, assign its value in the candidate map and
+        // propigate.
+        for(var square in squares_values_map){
+            var val = squares_values_map[square];
+
+            if(sudoku._in(val, sudoku.DIGITS)){
+                var new_candidates = sudoku._assign(candidate_map, square, val);
+
+                // Fail if we can't assign val to square
+                if(!new_candidates){
+                    return false;
+                }
+            }
+        }
+
+        return candidate_map;
+    };
+
+    sudoku._search = function(candidates, reverse){
+        /* Given a map of squares -> candiates, using depth-first search,
+        recursively try all possible values until a solution is found, or false
+        if no solution exists.
+        */
+
+        // Return if error in previous iteration
+        if(!candidates){
+            return false;
+        }
+
+        // Default reverse to false
+        reverse = reverse || false;
+
+        // If only one candidate for every square, we've a solved puzzle!
+        // Return the candidates map.
+        var max_nr_candidates = 0;
+        // eslint-disable-next-line
+        var max_candidates_square = null;
+        for(var si in SQUARES){
+            var square = SQUARES[si];
+
+            var nr_candidates = candidates[square].length;
+
+            if(nr_candidates > max_nr_candidates){
+                max_nr_candidates = nr_candidates;
+                max_candidates_square = square;
+            }
+        }
+        if(max_nr_candidates === 1){
+            return candidates;
+        }
+
+        // Choose the blank square with the fewest possibilities > 1
+        var min_nr_candidates = 10;
+        var min_candidates_square = null;
+        for(si in SQUARES){
+            square = SQUARES[si];
+
+            nr_candidates = candidates[square].length;
+
+            if(nr_candidates < min_nr_candidates && nr_candidates > 1){
+                min_nr_candidates = nr_candidates;
+                min_candidates_square = square;
+            }
+        }
     
