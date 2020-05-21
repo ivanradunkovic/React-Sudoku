@@ -152,3 +152,111 @@
                 }
             }
         }
+
+         // Give up and try a new puzzle
+         return sudoku.generate(difficulty);
+        };
+    
+        // Solve
+        // -------------------------------------------------------------------------
+        sudoku.solve = function(board, reverse){
+            /* Solve a sudoku puzzle given a sudoku `board`, i.e., an 81-character
+            string of sudoku.DIGITS, 1-9, and spaces identified by '.', representing the
+            squares. There must be a minimum of 17 givens. If the given board has no
+            solutions, return false.
+            Optionally set `reverse` to solve "backwards", i.e., rotate through the
+            possibilities in reverse. Useful for checking if there is more than one
+            solution.
+            */
+    
+            // Assure a valid board
+            var report = sudoku.validate_board(board);
+            if(report !== true){
+                throw report;
+            }
+    
+            // Check number of givens is at least MIN_GIVENS
+            var nr_givens = 0;
+            for(var i in board){
+                if(board[i] !== sudoku.BLANK_CHAR && sudoku._in(board[i], sudoku.DIGITS)){
+                    ++nr_givens;
+                }
+            }
+            if(nr_givens < MIN_GIVENS){
+                // eslint-disable-next-line
+                throw "Too few givens. Minimum givens is " + MIN_GIVENS;
+            }
+    
+            // Default reverse to false
+            reverse = reverse || false;
+    
+            var candidates = sudoku._get_candidates_map(board);
+            var result = sudoku._search(candidates, reverse);
+    
+            if(result){
+                var solution = "";
+                for(var square in result){
+                    solution += result[square];
+                }
+                return solution;
+            }
+            return false;
+        };
+    
+        sudoku.get_candidates = function(board){
+            /* Return all possible candidatees for each square as a grid of
+            candidates, returnning `false` if a contradiction is encountered.
+            Really just a wrapper for sudoku._get_candidates_map for programmer
+            consumption.
+            */
+    
+            // Assure a valid board
+            var report = sudoku.validate_board(board);
+            if(report !== true){
+                throw report;
+            }
+    
+            // Get a candidates map
+            var candidates_map = sudoku._get_candidates_map(board);
+    
+            // If there's an error, return false
+            if(!candidates_map){
+                return false;
+            }
+    
+            // Transform candidates map into grid
+            var rows = [];
+            var cur_row = [];
+            var i = 0;
+            for(var square in candidates_map){
+                var candidates = candidates_map[square];
+                cur_row.push(candidates);
+                if(i % 9 === 8){
+                    rows.push(cur_row);
+                    cur_row = [];
+                }
+                ++i;
+            }
+            return rows;
+        }
+    
+        sudoku._get_candidates_map = function(board){
+            /* Get all possible candidates for each square as a map in the form
+            {square: sudoku.DIGITS} using recursive constraint propagation. Return `false`
+            if a contradiction is encountered
+            */
+    
+            // Assure a valid board
+            var report = sudoku.validate_board(board);
+            if(report !== true){
+                throw report;
+            }
+    
+            var candidate_map = {};
+            var squares_values_map = sudoku._get_square_vals_map(board);
+    
+            // Start by assigning every digit as a candidate to every square
+            for(var si in SQUARES){
+                candidate_map[SQUARES[si]] = sudoku.DIGITS;
+            }
+    
