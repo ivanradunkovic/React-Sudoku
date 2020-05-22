@@ -324,4 +324,50 @@
                 min_candidates_square = square;
             }
         }
-    
+    // Recursively search through each of the candidates of the square
+        // starting with the one with fewest candidates.
+
+        // Rotate through the candidates forwards
+        var min_candidates = candidates[min_candidates_square];
+        if(!reverse){
+            for(var vi in min_candidates){
+                var val = min_candidates[vi];
+
+                // TODO: Implement a non-rediculous deep copy function
+                var candidates_copy = JSON.parse(JSON.stringify(candidates));
+                var candidates_next = sudoku._search(
+                    sudoku._assign(candidates_copy, min_candidates_square, val)
+                );
+
+                if(candidates_next){
+                    return candidates_next;
+                }
+            }
+
+        // Rotate through the candidates backwards
+        } else {
+            for(vi = min_candidates.length - 1; vi >= 0; --vi){
+                val = min_candidates[vi];
+
+                // TODO: Implement a non-rediculous deep copy function
+                candidates_copy = JSON.parse(JSON.stringify(candidates));
+                candidates_next = sudoku._search(
+                    sudoku._assign(candidates_copy, min_candidates_square, val),
+                    reverse
+                );
+
+                if(candidates_next){
+                    return candidates_next;
+                }
+            }
+        }
+
+        // If we get through all combinations of the square with the fewest
+        // candidates without finding an answer, there isn't one. Return false.
+        return false;
+    };
+
+    sudoku._assign = function(candidates, square, val){
+        /* Eliminate all values, *except* for `val`, from `candidates` at
+        `square` (candidates[square]), and propagate. Return the candidates map
+        when finished. If a contradiciton is found, return false.
